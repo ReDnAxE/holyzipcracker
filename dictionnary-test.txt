@@ -1,6 +1,5 @@
 The Holy Bible
 New Living Translation NLT
 Gen 1:1 In the beginning God created the heavens and the earth.
-Gen 1:2 The earth was empty, a formless mass cloaked in darkness. And the Spirit of God was hovering over
-its surface.
+Gen 1:2 The earth was empty, a formless mass cloaked in darkness. And the Spirit of God was hovering over its surface.
 Test alex.
