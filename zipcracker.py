@@ -2,7 +2,7 @@ import itertools, sys, re
 from zipfile import ZipFile
 
 passwordMangleTabRegexs=[
-    ("","","no change"), #TODO: DELETE
+    #("","","no change"), #TODO: DELETE
     ("^\w{1,5} \d{1,4}:\d{1,4} ","","del prefixes"),
     ("\.","","del points"),
     ("[^\w]+","","delete all non alphabetic characters"),
