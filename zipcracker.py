@@ -1,17 +1,16 @@
-import itertools, sys, re
+import itertools, sys, re, datetime
 from zipfile import ZipFile
+from math import *
 
 passwordMangleTabRegexs=[
-    #("","","no change"), #TODO: DELETE
-    ("^\w{1,5} \d{1,4}:\d{1,4} ","","del prefixes"),
     ("\.","","del points"),
     ("[^\w]+","","delete all non alphabetic characters"),
+    ("[\d]+","","delete all numeric characters"),
     ("FUNCTION","TOLOWERCASE","to lowercase")
 ]
 
 
-def extract(zfile, password, description):
-    #print (description + ' : ' + password)
+def extract(zfile, password):
     try:
         with ZipFile(zfile) as zf:
             zf.extractall(pwd=password.encode())
@@ -23,21 +22,16 @@ def extract(zfile, password, description):
         return False
 
 
-def manglePasswordAndExtract(zfile, password, passwordMangleTabRegexs):
+def getMangledPaswords(password, reorderedRegexsTab):
     global re
-    for regex,replacement,description in passwordMangleTabRegexs:
+
+    for regex,replacement,description in reorderedRegexsTab:
         if regex == 'FUNCTION': #TODO: allow multiple functions
             password = password.lower()
         else:
             password = re.sub(regex, replacement, password)
 
-        opened = extract(zfile, password, description)
-
-        if opened == True:
-            print ('mangled password found !!! ' + password)
-            return password
-
-    return False
+        yield password
 
 
 def printRegexsUsed(passwordMangleTabRegexs):
@@ -69,10 +63,38 @@ def generateRegexsPermutsPossibilities(indice, passwordMangleTabRegexs, nbRegexs
     return 0
 
 
-def dictionary(zfile, dic):
+def getPasswordsToTestFromDictionary(dictionaryFile, startAt):
+    dlist = dictionaryFile.readlines()
+    nbLines = len(dlist)
+    percent = -1
+    start = startAt
+
+    for i in range(startAt,nbLines):
+        percentProgress = floor(i / nbLines * 100)
+        if (percentProgress > percent):
+            percent = percentProgress
+            print (str(i) + '/' + str(nbLines) + ' : ' + str(percent) + '%')
+
+        passwordToTest = re.sub('\n', '', dlist[i])
+        passwordToTest = passwordToTest.rstrip()
+        passwordToTest = passwordToTest.lstrip()
+        #OR PERHAPS = passwordToTest.strip(' \t\n\r')
+
+        yield passwordToTest
+
+        for reorderedRegexsTab in generateRegexsPermutsPossibilities(0, passwordMangleTabRegexs, len(passwordMangleTabRegexs)):
+            for mangledPasswordToTest in getMangledPaswords(passwordToTest, reorderedRegexsTab):
+                yield mangledPasswordToTest
+
+
+def dictionaryStrategy(zfile, dic):
     #TODO: check utility of back file generated
     global re
     password = ''
+    startDate = now = datetime.datetime.now()
+
+    print ('Processing dictionary strategy... ' + str(startDate))
+
     try:
         f = open(back,'r')
         data = f.readline().strip()
@@ -80,10 +102,10 @@ def dictionary(zfile, dic):
             password = data[4:]
             return password
         else:
-            start = int(data)
+            startAt = int(data)
         f.close()
     except:
-        start = 1
+        startAt = 1
     dictionaryFile = open(dic,'r')
     try:
         zf = zipfile.ZipFile(zfile)
@@ -96,41 +118,27 @@ def dictionary(zfile, dic):
     except:
         flag = False
     if not flag:
-        dlist = dictionaryFile.readlines()
-        nbLines = len(dlist)
-        for i in range(start,nbLines):
-
-            percentProgress = (i / nbLines * 100)
-
-            if (100 % percentProgress == 0):
-                print (str(percentProgress) + '%')
-
-            passwordToTest = re.sub('\n', '', dlist[i]) #default delete new lines
+        for passwordToTest in getPasswordsToTestFromDictionary(dictionaryFile, startAt):
             try:
-                #print ('\n\nNew password to mangle : ' + passwordToTest, end='')
-                generatorRegexs = generateRegexsPermutsPossibilities(0, passwordMangleTabRegexs, len(passwordMangleTabRegexs))
-                for generatedRegexsTab in generatorRegexs:
-                    #print ('\nchange regex order and retry...')
-                    passwordFounded = manglePasswordAndExtract(zfile, passwordToTest, generatedRegexsTab)
-                    if passwordFounded:
-                        return passwordFounded
+                if extract(zfile, passwordToTest):
+                    print ('mangled password found !!! ' + passwordToTest)
+                    return passwordToTest
             except KeyboardInterrupt:
                 exit(0)
-    print ('Password Not Found!!!')
+    print ('Password Not Found... ' + str(datetime.datetime.now()))
     return
 
 
 if __name__ == '__main__':
     arg = sys.argv[1:]
     if arg[1] == '-d':
-        print ('Processing...')
         fl = arg[2].split('=')[1]
-        password = dictionary(arg[0],fl)
+        passwordFounded = dictionaryStrategy(arg[0],fl)
 
-        if (password):
+        if (passwordFounded):
             back = '.passwordfound.data'
             f = open(back,'w')
-            f.write('pwd:' + password)
+            f.write('pwd:' + passwordFounded)
             f.close()
 
         exit(0)

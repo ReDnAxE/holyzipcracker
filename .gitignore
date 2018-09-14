@@ -1,3 +1,5 @@
 emergency.zip
 emergency.7z
 holyfuck.txt
+data/*
+!data/.gitkeep
