@@ -1,4 +1,4 @@
-import itertools, sys, re, datetime
+import itertools, sys, re, datetime, hashlib
 from zipfile import ZipFile
 from math import *
 
@@ -71,6 +71,8 @@ def getPasswordsToTestFromDictionary(dictionaryFile, startAt):
 
     for i in range(startAt,nbLines):
         percentProgress = floor(i / nbLines * 100)
+        passwordsTestedHashesForLine = []
+
         if (percentProgress > percent):
             percent = percentProgress
             print (str(i) + '/' + str(nbLines) + ' : ' + str(percent) + '%')
@@ -81,10 +83,14 @@ def getPasswordsToTestFromDictionary(dictionaryFile, startAt):
         #OR PERHAPS = passwordToTest.strip(' \t\n\r')
 
         yield passwordToTest
+        passwordsTestedHashesForLine.append(hashlib.sha1(passwordToTest.encode()))
 
         for reorderedRegexsTab in generateRegexsPermutsPossibilities(0, passwordMangleTabRegexs, len(passwordMangleTabRegexs)):
             for mangledPasswordToTest in getMangledPaswords(passwordToTest, reorderedRegexsTab):
-                yield mangledPasswordToTest
+                sha1Password = hashlib.sha1(mangledPasswordToTest.encode())
+                if sha1Password.hexdigest() not in passwordsTestedHashesForLine:
+                    yield mangledPasswordToTest
+                    passwordsTestedHashesForLine.append(sha1Password.hexdigest())
 
 
 def dictionaryStrategy(zfile, dic):
