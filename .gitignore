@@ -3,3 +3,6 @@ emergency.7z
 holyfuck.txt
 data/*
 !data/.gitkeep
+!data/FAUXZIP.zip
+!data/dictionary-test.txt
+src/__pycache__
