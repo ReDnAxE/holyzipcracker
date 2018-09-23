@@ -1,13 +1,15 @@
-from DictionaryExtractorStrategy import *
+from PasswordExtractorStrategy.DictionaryLinesExtractorStrategy import *
 from Dezipper import *
 from ZipExtractor import *
+from PasswordMutator import *
 
 class Main:
     def __init__(self, zippedFilePath, dictionaryFilePath):
-        dictionaryExtractorStrategy = DictionaryExtractorStrategy(dictionaryFilePath)
+        dictionaryLinesExtractorStrategy = DictionaryLinesExtractorStrategy(dictionaryFilePath)
         dezipper = Dezipper(zippedFilePath)
-        self.zipExtractor = ZipExtractor(dezipper, dictionaryExtractorStrategy)
-    
+        passwordMutator = PasswordMutator()
+        self.zipExtractor = ZipExtractor(dezipper, dictionaryLinesExtractorStrategy, passwordMutator)
+
     def start(self):
         self.zipExtractor.start()
 

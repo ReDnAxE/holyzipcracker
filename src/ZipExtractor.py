@@ -1,11 +1,10 @@
 import datetime, hashlib
-from PasswordMutator import *
 
 class ZipExtractor:
-    def __init__(self, dezipper, passwordExtractorStrategy):
+    def __init__(self, dezipper, passwordExtractorStrategy, passwordMutator):
         self.dezipper = dezipper
         self.passwordExtractorStrategy = passwordExtractorStrategy
-        self.passwordMutator = PasswordMutator()
+        self.passwordMutator = passwordMutator
 
 
     def start(self):

@@ -5,4 +5,4 @@ data/*
 !data/.gitkeep
 !data/FAUXZIP.zip
 !data/dictionary-test.txt
-src/__pycache__
+__pycache__
