@@ -5,7 +5,9 @@ This script attempt to crack a protected zip file
 Python 3 compatible
 
 Command line example : 
-python src/zipcracker.py data/FAUXZIP.zip data/dictionnary-test.txt
+python src/main.py data/FAUXZIP.zip data/dictionary-test.txt
+or
+python3.7-32 src/main.py data/FAUXZIP.zip data/dictionary-test.txt
 
 
 

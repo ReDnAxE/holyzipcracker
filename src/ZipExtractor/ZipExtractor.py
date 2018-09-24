@@ -8,19 +8,14 @@ class ZipExtractor:
 
 
     def start(self):
-        startDate = datetime.datetime.now()
-        print ('Processing... ' + str(startDate))
-
         for passwordToTest in self.getPasswords():
             try:
                 if self.dezipper.extractZip(passwordToTest):
-                    print ('mangled password found !!! ' + passwordToTest)
-                    exit(0)
+                    return passwordToTest
             except KeyboardInterrupt:
                 exit(0)
 
-        print ('Password Not Found... ' + str(datetime.datetime.now()))
-        exit(0)
+        return False
 
 
     def getPasswords(self):
