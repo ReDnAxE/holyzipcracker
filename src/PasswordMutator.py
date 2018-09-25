@@ -3,7 +3,7 @@ import re
 class PasswordMutator:
     def __init__(self):
         self.passwordMangleTabRegexs=[
-            ("\.","","del points"),
+            #("\.","","del points"),
             ("[^\w]+","","delete all non alphabetic characters"),
             ("[\d]+","","delete all numeric characters"),
             ("FUNCTION","TOLOWERCASE","to lowercase")

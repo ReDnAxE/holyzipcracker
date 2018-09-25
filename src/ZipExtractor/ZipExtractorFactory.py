@@ -8,10 +8,7 @@ from PasswordMutator import *
 
 class ZipExtractorFactory:
     def startNewZipExtractorInstance(self, zippedFilePath, dictionaryFilePath, startAtLine, endAtLine):
-        dezipper = Dezipper(zippedFilePath)
-        dictionaryLinesExtractorStrategy = DictionaryLinesExtractorStrategy(dictionaryFilePath, startAtLine, endAtLine)
-        passwordMutator = PasswordMutator()
-        zipExtractor = ZipExtractor(dezipper, dictionaryLinesExtractorStrategy, passwordMutator)
+        zipExtractor = self.getZipExtractor(zippedFilePath, dictionaryFilePath, startAtLine, endAtLine)
 
         startDate = datetime.datetime.now()
         print (str(os.getpid()) + ' Processing (line ' + str(startAtLine) + ' to ' + str(endAtLine) + ')... ' + str(startDate))
@@ -21,5 +18,14 @@ class ZipExtractorFactory:
 
         if (foundedPassword):
             print (str(os.getpid()) + ' mangled password found !!! ' + foundedPassword + ' (' + str(durationTime) + ')')
-            return
+            return foundedPassword
         print (str(os.getpid()) + ' Password Not Found... (' + str(durationTime) + ')')
+
+        return False
+
+
+    def getZipExtractor(self, zippedFilePath, dictionaryFilePath, startAtLine, endAtLine):
+        dezipper = Dezipper(zippedFilePath)
+        dictionaryLinesExtractorStrategy = DictionaryLinesExtractorStrategy(dictionaryFilePath, startAtLine, endAtLine)
+        passwordMutator = PasswordMutator()
+        return ZipExtractor(dezipper, dictionaryLinesExtractorStrategy, passwordMutator)

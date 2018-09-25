@@ -11,7 +11,7 @@ class Main:
 
     def start(self):
         zipExtractorFactory = ZipExtractorFactory()
-        zipExtractorFactory.startNewZipExtractorInstance(self.zippedFilePath, self.dictionaryFilePath, 0, 0)
+        passwordFounded = zipExtractorFactory.startNewZipExtractorInstance(self.zippedFilePath, self.dictionaryFilePath, 0, 0)
     
     def startWithMultiProcesses(self):
         multiProcessedZipExtractor = MultiProcessedZipExtractor(self.zippedFilePath, self.dictionaryFilePath)

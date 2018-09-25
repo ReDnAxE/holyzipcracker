@@ -9,12 +9,8 @@ class ZipExtractor:
 
     def start(self):
         for passwordToTest in self.getPasswords():
-            try:
-                if self.dezipper.extractZip(passwordToTest):
-                    return passwordToTest
-            except KeyboardInterrupt:
-                exit(0)
-
+            if self.dezipper.extractZip(passwordToTest):
+                return passwordToTest
         return False
 
 
@@ -31,3 +27,6 @@ class ZipExtractor:
                 if sha1Password.hexdigest() not in passwordsTestedHashes:
                     yield mutatedPasswordToTest
                     passwordsTestedHashes.append(hashlib.sha1(mutatedPasswordToTest.encode()))
+
+    #def getProgress(self):
+    #    

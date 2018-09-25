@@ -1,4 +1,4 @@
-import datetime, os
+import datetime, os, time
 from math import *
 import multiprocessing as mp
 
@@ -16,17 +16,35 @@ class MultiProcessedZipExtractor:
         self.nbProcesses = mp.cpu_count()
         self.zipExtractorFactory = ZipExtractorFactory()
 
+
     def start(self):
         chunkedLinesNumbers = self.getChunkedLinesNumbers()
+        passwordFoundEvent = mp.Event()
 
         for i in range(self.nbProcesses):
-            p = mp.Process(target=self.process, args=(self.zippedFilePath, self.dictionaryFilePath, chunkedLinesNumbers[i][0], chunkedLinesNumbers[i][1]))
+            p = mp.Process(target=self.process, args=(self.zippedFilePath, self.dictionaryFilePath, chunkedLinesNumbers[i][0], chunkedLinesNumbers[i][1], passwordFoundEvent))
             self.processes.append(p)
 
-        [x.start() for x in self.processes]
+        [process.start() for process in self.processes]
+        self.watchProcesses(passwordFoundEvent)
 
-    def process(self, zippedFilePath, dictionaryFilePath, startAtLine, endAtLine):
-        self.zipExtractorFactory.startNewZipExtractorInstance(zippedFilePath, dictionaryFilePath, startAtLine, endAtLine)
+
+    def watchProcesses(self, passwordFoundEvent):
+        while True:
+            if (any(process.is_alive() for process in self.processes)):
+                if (passwordFoundEvent.is_set() is True):
+                    [process.kill() for process in self.processes]
+                else:
+                    time.sleep(1)
+            else:
+                break
+
+
+    def process(self, zippedFilePath, dictionaryFilePath, startAtLine, endAtLine, passwordFoundEvent):
+        foundedPassword = self.zipExtractorFactory.startNewZipExtractorInstance(zippedFilePath, dictionaryFilePath, startAtLine, endAtLine)
+        if (foundedPassword):
+            passwordFoundEvent.set()
+
 
     def getChunkedLinesNumbers(self):
         dictionaryLinesExtractorStrategy = DictionaryLinesExtractorStrategy(self.dictionaryFilePath)

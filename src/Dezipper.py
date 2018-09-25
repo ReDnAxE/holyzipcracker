@@ -12,6 +12,6 @@ class Dezipper:
                 zipFile.close()
             return True
         except KeyboardInterrupt:
-            exit(0)
+            exit(0) #TODO: remplacer
         except:
             return False
