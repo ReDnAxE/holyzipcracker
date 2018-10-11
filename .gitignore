@@ -6,3 +6,4 @@ data/*
 !data/FAUXZIP.zip
 !data/dictionary-test.txt
 __pycache__
+.vscode

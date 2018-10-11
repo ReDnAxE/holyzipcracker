@@ -1,18 +1,19 @@
 import datetime, os
 
-from PasswordExtractorStrategy.DictionaryLinesExtractorStrategy import *
+from DictionaryLinesExtractorStrategy import *
+from DictionaryCharByCharExtractorStrategy import *
 from ZipExtractor import *
 from Dezipper import *
-from ZipExtractor.ZipExtractor import *
+from ZipExtractor import *
 from PasswordMutator import *
 
 class ZipExtractorFactory:
-    def startNewZipExtractorInstance(self, zippedFilePath, dictionaryFilePath, startAtLine, endAtLine):
+    def startNewZipExtractorInstance(self, zippedFilePath, dictionaryFilePath, startAtLine, endAtLine, progressionDict):
         zipExtractor = self.getZipExtractor(zippedFilePath, dictionaryFilePath, startAtLine, endAtLine)
 
         startDate = datetime.datetime.now()
         print (str(os.getpid()) + ' Processing (line ' + str(startAtLine) + ' to ' + str(endAtLine) + ')... ' + str(startDate))
-        foundedPassword = zipExtractor.start()
+        foundedPassword = zipExtractor.start(progressionDict)
         endDate = datetime.datetime.now()
         durationTime = endDate - startDate
 
@@ -26,6 +27,8 @@ class ZipExtractorFactory:
 
     def getZipExtractor(self, zippedFilePath, dictionaryFilePath, startAtLine, endAtLine):
         dezipper = Dezipper(zippedFilePath)
-        dictionaryLinesExtractorStrategy = DictionaryLinesExtractorStrategy(dictionaryFilePath, startAtLine, endAtLine)
+        #passwordExtractorStrategy = DictionaryLinesExtractorStrategy(dictionaryFilePath, startAtLine, endAtLine)
+        passwordExtractorStrategy = DictionaryCharByCharExtractorStrategy(dictionaryFilePath, startAtLine, endAtLine)
+
         passwordMutator = PasswordMutator()
-        return ZipExtractor(dezipper, dictionaryLinesExtractorStrategy, passwordMutator)
+        return ZipExtractor(dezipper, passwordExtractorStrategy, passwordMutator)

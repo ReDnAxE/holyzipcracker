@@ -1,7 +1,6 @@
-from PasswordExtractorStrategy.DictionaryLinesExtractorStrategy import *
 from Dezipper import *
-from ZipExtractor.MultiProcessedZipExtractor import *
-from ZipExtractor.ZipExtractorFactory import *
+from MultiProcessedZipExtractor import *
+from ZipExtractorFactory import *
 from PasswordMutator import *
 
 class Main:
@@ -23,7 +22,6 @@ class Main:
         #    f = open(back,'w')
         #    f.write('pwd:' + passwordFounded)
         #    f.close()
-
 
 #SCRIPT START
 if __name__ == '__main__':

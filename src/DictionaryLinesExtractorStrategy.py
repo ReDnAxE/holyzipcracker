@@ -7,29 +7,22 @@ class DictionaryLinesExtractorStrategy: #implement PasswordExtractorStrategy
         self.dictionaryFile = open(self.dictionaryFilePath, 'r')
         self.startAtLine = startAtLine
         self.endAtLine = endAtLine
-        #self.percentProgress = -1
         self.currentLine = 0
 
     def getPasswords(self):
         dlist = self.dictionaryFile.readlines()
         if self.endAtLine == 0:
             self.endAtLine = self.getTotal()
-
-        #percent = -1
-
         for i in range(self.startAtLine, self.endAtLine):
             self.currentLine = i
-            #percentProgress = floor(i / self.endAtLine * 100)
-
-            #if (percentProgress > percent):
-            #    percent = percentProgress
-            #    print (str(i) + '/' + str(self.endAtLine) + ' : ' + str(percent) + '%')
-            #print (str(os.getpid()) + re.sub('\n', '', dlist[i]))
             yield re.sub('\n', '', dlist[i])
 
     def getTotal(self):
         nbLines = sum(1 for line in open(self.dictionaryFilePath))
         return nbLines
 
-    def getPercentProgress(self):
-        return floor((self.currentLine - self.startAtLine) / (self.endAtLine - self.startAtLine) * 100)
+    def getProgress(self):
+        progress = {'percent': 0, 'currentLine': self.currentLine, 'startAtLine': self.startAtLine, 'endAtLine': self.endAtLine, 'nbTestedLines': self.currentLine - self.startAtLine, 'nbTotalLinesToTest': self.endAtLine - self.startAtLine}
+        progress['percent'] = floor(progress['nbTestedLines'] / progress['nbTotalLinesToTest'] * 100)
+
+        return progress

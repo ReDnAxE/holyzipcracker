@@ -1,4 +1,4 @@
-import datetime, hashlib
+import datetime, hashlib, os
 
 class ZipExtractor:
     def __init__(self, dezipper, passwordExtractorStrategy, passwordMutator):
@@ -7,8 +7,9 @@ class ZipExtractor:
         self.passwordMutator = passwordMutator
 
 
-    def start(self):
+    def start(self, progressionDict):
         for passwordToTest in self.getPasswords():
+            progressionDict[os.getpid()] = self.passwordExtractorStrategy.getProgress()
             if self.dezipper.extractZip(passwordToTest):
                 return passwordToTest
         return False
@@ -27,6 +28,3 @@ class ZipExtractor:
                 if sha1Password.hexdigest() not in passwordsTestedHashes:
                     yield mutatedPasswordToTest
                     passwordsTestedHashes.append(hashlib.sha1(mutatedPasswordToTest.encode()))
-
-    #def getProgress(self):
-    #    
