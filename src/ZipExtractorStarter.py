@@ -7,7 +7,7 @@ from Dezipper import *
 from ZipExtractor import *
 from PasswordMutator import *
 
-class ZipExtractorFactory:
+class ZipExtractorStarter:
     def startNewZipExtractorInstance(self, zippedFilePath, dictionaryFilePath, startAtLine, endAtLine, progressionDict):
         zipExtractor = self.getZipExtractor(zippedFilePath, dictionaryFilePath, startAtLine, endAtLine)
 
@@ -28,7 +28,7 @@ class ZipExtractorFactory:
     def getZipExtractor(self, zippedFilePath, dictionaryFilePath, startAtLine, endAtLine):
         dezipper = Dezipper(zippedFilePath)
         #passwordExtractorStrategy = DictionaryLinesExtractorStrategy(dictionaryFilePath, startAtLine, endAtLine)
-        passwordExtractorStrategy = DictionaryCharByCharExtractorStrategy(dictionaryFilePath, startAtLine, endAtLine)
+        passwordExtractorStrategy = DictionaryCharByCharExtractorStrategy(dictionaryFilePath, startAtLine, endAtLine, minPasswordLen = 10, maxPasswordLen = 50)
 
         passwordMutator = PasswordMutator()
         return ZipExtractor(dezipper, passwordExtractorStrategy, passwordMutator)

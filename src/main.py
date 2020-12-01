@@ -1,6 +1,6 @@
 from Dezipper import *
 from MultiProcessedZipExtractor import *
-from ZipExtractorFactory import *
+from ZipExtractorStarter import *
 from PasswordMutator import *
 
 class Main:
@@ -9,8 +9,8 @@ class Main:
         self.dictionaryFilePath = dictionaryFilePath
 
     def start(self):
-        zipExtractorFactory = ZipExtractorFactory()
-        passwordFounded = zipExtractorFactory.startNewZipExtractorInstance(self.zippedFilePath, self.dictionaryFilePath, 0, 0)
+        zipExtractorStarter = ZipExtractorStarter()
+        passwordFounded = zipExtractorStarter.startNewZipExtractorInstance(self.zippedFilePath, self.dictionaryFilePath, 0, 0)
     
     def startWithMultiProcesses(self):
         multiProcessedZipExtractor = MultiProcessedZipExtractor(self.zippedFilePath, self.dictionaryFilePath)

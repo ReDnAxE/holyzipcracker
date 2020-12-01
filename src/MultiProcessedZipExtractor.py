@@ -3,7 +3,7 @@ from math import *
 import multiprocessing as mp
 
 from DictionaryLinesExtractorStrategy import *
-from ZipExtractorFactory import *
+from ZipExtractorStarter import *
 from Dezipper import *
 from PasswordMutator import *
 from ProgressOutput import *
@@ -14,7 +14,7 @@ class MultiProcessedZipExtractor:
         self.dictionaryFilePath = dictionaryFilePath
         self.processes = []
         self.nbProcesses = mp.cpu_count()
-        self.zipExtractorFactory = ZipExtractorFactory()
+        self.zipExtractorStarter = ZipExtractorStarter()
         self.progressOutput = ProgressOutput()
         self.nbTotalLines = 0
         #TODO: test multiprocessing contexts and start methods (spawn, fork, forkserver)
@@ -48,7 +48,7 @@ class MultiProcessedZipExtractor:
 
 
     def process(self, zippedFilePath, dictionaryFilePath, startAtLine, endAtLine, passwordFoundEvent, progressionDict):
-        foundedPassword = self.zipExtractorFactory.startNewZipExtractorInstance(zippedFilePath, dictionaryFilePath, startAtLine, endAtLine, progressionDict)
+        foundedPassword = self.zipExtractorStarter.startNewZipExtractorInstance(zippedFilePath, dictionaryFilePath, startAtLine, endAtLine, progressionDict)
         if (foundedPassword):
             passwordFoundEvent.set()
 
